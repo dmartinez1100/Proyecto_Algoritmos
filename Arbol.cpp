@@ -7,13 +7,24 @@ struct Derivar{
 		Derivar* prueba=this;
 		imprimir(prueba);
 	}
+	string tostring(){
+		Derivar* prueba=this;
+		return tostring(prueba);
+	}
 	void imprimir(Derivar* & arbol){
-		if(arbol->left==nullptr && arbol->right==nullptr)
+		if(arbol->left==nullptr)
 			cout<<arbol->signo;
 		else{
 			imprimir(arbol->left);
 			cout<<arbol->signo;
 			imprimir(arbol->right);
+			}
+	}
+	string tostring(Derivar* & arbol){
+		if(arbol->left==nullptr)
+			return arbol->signo;
+		else{
+			return tostring(arbol->left)+(arbol->signo)+tostring(arbol->right);
 			}
 	}
 	Derivar(string algo){
@@ -48,5 +59,7 @@ Derivar x("x");
 Derivar h("2");
 Derivar j(h,"*",x);
 Derivar k(j,"^",h);
-k.imprimir();
+Derivar W("Ln",k.tostring(),"");
+cout<<W.tostring()<<endl;
+W.imprimir();
 }
