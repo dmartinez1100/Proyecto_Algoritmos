@@ -27,6 +27,7 @@ vector<int> vectorrandom(int numeroelementos){
 		estevector.push_back(numrandom(0,100));
 	return estevector;
 }
+
 vector<int> vectorrandom(int numeroelementos,int rang1,int rang2){
 	srand(time(NULL));
 	vector<int> estevector;
@@ -34,12 +35,14 @@ vector<int> vectorrandom(int numeroelementos,int rang1,int rang2){
 		estevector.push_back(numrandom(rang1,rang2));
 	return estevector;
 }
+
 void bogosort(vector<int> & myvector){
 	while(issorted(myvector)== false){
 		shuffle(myvector);
 		cout<<"sorting\n";
 	}
 }
+
 bool issorted(vector<int> & myvector){
 	for(size_t i=0;i<myvector.size()-1;i++){
 		if (myvector[i]>myvector[i+1]){
@@ -47,11 +50,13 @@ bool issorted(vector<int> & myvector){
 	}
 	return true;
 }
+
 void shuffle(vector<int> & myvector){
 	for(size_t i=0;i<=myvector.size();i++){
 		swap(myvector[i],myvector[numrandom(0,myvector.size()-1)]);
 	}
 }
+
 void selectionsort(vector<int> & myvector){
 	for(size_t i=0;i<myvector.size();i++){
 		int minindex=i;
@@ -63,6 +68,7 @@ void selectionsort(vector<int> & myvector){
 	cout<<"ordenando "<<myvector.size()<<" elementos"<<endl;
 	}
 }
+
 void quickSort(vector<int> & vector1, int i, int j){
   if(i<j){
     int par= partition(vector1, i,j);
@@ -71,9 +77,11 @@ void quickSort(vector<int> & vector1, int i, int j){
 
   }
 }
+
 void quickSort(vector<int> & vector1){
 	quickSort(vector1,0,vector1.size()-1);
 }
+
 int partition(vector<int>  & vector1, int i, int j){
   int pivot=vector1[j];
   int low = (i-1);
