@@ -1,2 +1,2 @@
 # Proyecto_Algoritmos
-Programa para derivar funciones
+Uso de multithreads
