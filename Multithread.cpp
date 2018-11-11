@@ -52,14 +52,17 @@ int main(){
 
   return 0;
 }
+
 void pausefor(int n){ //metodo que genera una pausa
 	std::this_thread::sleep_for(std::chrono::seconds(n));
 }
+
 void multiplicarescalar(int escalar,vector<int>& myvector){//multiplica un escalar por un vector(sin threads)
 	for(size_t i=0;i<myvector.size();i++)
 		myvector[i]=myvector[i]*escalar;
 	cout<<"vector multiplicado por el escalar: "<<escalar<<endl;
 }
+
 void sumarvector(vector<int>& vector1,vector<int>& myvector){ //suma de dos vectores con dos threads
 	clock_t t=clock();
 	if(vector1.size()!=myvector.size())throw runtime_error("no puedes sumar vectores de distinto orden");
@@ -75,17 +78,20 @@ void sumarvector2(vector<int>& vector1,vector<int>& myvector,int n,int y){ //sum
 	for(int i=n;i<y;i++)
 		vector1[i]=myvector[i]+vector1[i];
 }
+
 void sumarsinthread(vector<int>& vector1,vector<int>& myvector){ //suma de dos vectores sin usar threads
 	clock_t t=clock();
 	sumarvector2(ref(vector1),ref(myvector),0,myvector.size()/1);
 	cout<<"  Tiempo de ejecucion: "<<(double)(clock()-t)/CLOCKS_PER_SEC<<flush<<endl;
 }
+
 void productopuntosinthread(vector<int>& vector1,vector<int>& myvector){//producto punto de un vector sin usar threads
 	clock_t t=clock();
 	int answer=productopunto(vector1,myvector,0,vector1.size());
 	cout<<answer<<endl;
 	cout<<"  Tiempo de ejecucion: "<<(double)(clock()-t)/CLOCKS_PER_SEC<<flush<<endl;
 }
+
 int productopunto(vector<int>& vector1,vector<int>& myvector,int n,int y){ //producto punto desde index n hasta index y de un vector
 	int answer=0;
 	for(int i=n;i<y;i++){
@@ -93,6 +99,7 @@ int productopunto(vector<int>& vector1,vector<int>& myvector,int n,int y){ //pro
 	}
 	return answer;
 }
+
 void productopuntoconthread(vector<int>& vector1,vector<int>& myvector){ //producto punto usando 2 threads
 	clock_t t=clock();
 	int i=myvector.size()/2;
