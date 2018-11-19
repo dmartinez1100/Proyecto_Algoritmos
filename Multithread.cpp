@@ -14,6 +14,10 @@ void sumarvector(vector<int>& vector1,vector<int>& myvector);
 void productopuntoconthread(vector<int>& vector1,vector<int>& myvector);
 int productopunto(vector<int>& vector1,vector<int>& myvector,int n,int y);
 void printvector(vector<int> & myvector);
+double HarmonicNumber_left(double n);
+double HarmonicNumber_right(double n);
+void HarmonicNumber_differnce_sums(double n);
+
 int main(){
 
 	//creamos los vectores
@@ -34,6 +38,9 @@ int main(){
 	cout<<"Ahora probemos la complejidad computacional del producto punto."<<flush<<endl;
 	cout<<"Producto con thread: "<<flush;
 	productopuntoconthread(myvector,myvector2);
+
+	cout<<"\nProbemos ahora la complejidad computacional del calculo de la diferencia entre el resultado n-esimo numero armonico (de izq. a der.) y el resultado n-esimo numero armonico (de der. a izq.).\nLo haremos con n = 5x10^8."<<flush<<endl;
+    HarmonicNumber_differnce_sums(5*(10^8));
 
   return 0;
 }
@@ -85,4 +92,31 @@ void printvector(vector<int> & myvector){
 	cout<<myvector.at(myvector.size()-1)<<']';
 	}
 	cout<<"\n";
+}
+
+
+void HarmonicNumber_differnce_sums(double n){ //producto punto usando 2 threads
+	clock_t t=clock();
+	int i=myvector.size()/2;
+	future<int> f1=async(launch::async,HarmonicNumber_right,n);
+	future<int> f2=async(launch::async,HarmonicNumber_left,n);
+	int answer=f1.get()-f2.get();
+	cout<<"Diferencia entre resultados: "<<answer<<flush<<endl;
+	cout<<"  Tiempo de ejecucion: "<<(double)(clock()-t)/CLOCKS_PER_SEC<<flush<<endl;
+}
+
+double HarmonicNumber_right(double n){
+    double result = 0;
+    for(int i =1; i<=n; i++){
+        result += (double)1/i;
+    }
+    return result;
+}
+
+double HarmonicNumber_left(double n){
+    double result = 0;
+    for(int i=(int)n; i>=1; i--){
+        result += (double)1/i;
+    }
+    return result;
 }
