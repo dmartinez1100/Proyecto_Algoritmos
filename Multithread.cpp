@@ -39,8 +39,10 @@ int main(){
 	cout<<"Producto con thread: "<<flush;
 	productopuntoconthread(myvector,myvector2);
 
+	
 	cout<<"\nProbemos ahora la complejidad computacional del calculo de la diferencia entre el resultado n-esimo numero armonico (de izq. a der.) y el resultado n-esimo numero armonico (de der. a izq.).\nLo haremos con n = 5x10^8."<<flush<<endl;
-    HarmonicNumber_differnce_sums(5*(10^8));
+	double n = 5e8;
+    HarmonicNumber_differnce_sums(n);
 
   return 0;
 }

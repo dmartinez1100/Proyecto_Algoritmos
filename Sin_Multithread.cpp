@@ -32,7 +32,8 @@ int main(){
 	cout<<"Producto sin thread: "<<j<<endl<<flush;
 
     cout<<"\nProbemos ahora la complejidad computacional del calculo de la diferencia entre el resultado n-esimo numero armonico (de izq. a der.) y el resultado n-ésimo numero armonico (de der. a izq.).\nLo haremos con n = 5x10^5."<<flush<<endl;
-    HarmonicNumber_differnce_sums(5*(10^8));
+    double n = 5e8;
+    HarmonicNumber_differnce_sums(n);
 }
 int productopunto(vector<int>& vector1,vector<int>& myvector){ //producto punto de un vector
 	clock_t t=clock();
