@@ -5,60 +5,79 @@
 #include<chrono>
 #include<vector>
 #include<time.h>
+#include<cmath>
 using namespace std;
 
+const int NUM_THREADS=8;
+const int Vec_Size=1*pow(10, 7); //recomendado 10^8 (12 segs) 8 threads
+int Producto_Punto=0;
+int numeros_primos=0;
+int prime_method = 2*pow(10, 5);
 
-void multiplicarescalar(int escalar,vector<int>& myvector);
 void sumarvector2(vector<int>& vector1,vector<int>& myvector,int n,int y);
 void sumarvector(vector<int>& vector1,vector<int>& myvector);
-void productopuntoconthread(vector<int>& vector1,vector<int>& myvector);
-int productopunto(vector<int>& vector1,vector<int>& myvector,int n,int y);
+
+void productopunto(vector<int>& vector1,vector<int>& myvector);
+void productopunto2(vector<int>& vector1,vector<int>& myvector,int n,int y);
+
 void printvector(vector<int> & myvector);
-double HarmonicNumber_left(double n);
-double HarmonicNumber_right(double n);
+double HarmonicNumber_left(double begin,double end);
+double HarmonicNumber_right(double begin,double end);
 void HarmonicNumber_differnce_sums(double n);
+double HarmonicNumberaux(double begin,double end);
+
+void PrimeNumbersaux(int begin,int end);
+void PrimeNumbers(int end);
+bool isPrime(int i);
 
 int main(){
-
+	
+	cout<<"Threads que usaremos: "<<NUM_THREADS;
+	cout<<"             Hardware Threads: "<< std::thread::hardware_concurrency()<<endl;
 	//creamos los vectores
-	cout<<"------------Con Thread------------"<<endl;
-	vector<int> myvector(100000000,1);
-	vector<int> myvector2(100000000,2);
+	vector<int> myvector(Vec_Size,1);
+	vector<int> myvector2(Vec_Size,2);
 
 	//imprimimos los vectores (solo cuando son pequenos)
 	//printvector(myvector);
 	//printvector(myvector2);
-
+	
 	//hacemos la operacion suma
-	cout<<"Probemos la complejidad computacional sumando dos vectores de "<<myvector.size()<<" enteros."<<flush<<endl;
+	cout<<"\n\nProbemos la complejidad computacional sumando dos vectores de "<<Vec_Size<<" enteros."<<flush<<endl;
+	cout<<"----------> O(N) <----------\n";
 	sumarvector(myvector,myvector2);
 	//printvector(myvector); //imprime el vector sumado (solo cuando es un vector pequeno)
-
+	
 	//hacemos el producto punto
-	cout<<"Ahora probemos la complejidad computacional del producto punto."<<flush<<endl;
-	cout<<"Producto con thread: "<<flush;
-	productopuntoconthread(myvector,myvector2);
+	cout<<"\n\nAhora probemos la complejidad computacional del producto punto."<<flush<<endl;
+	cout<<"----------> O(N) <----------\n";
+	productopunto(myvector,myvector2);
 
 	double r=5e8; // con 5e8 (5 segs aprox)
-	cout<<"\nProbemos ahora la complejidad computacional del calculo de la diferencia entre el resultado n-esimo numero armonico (de izq. a der.) y el resultado n-Ã©simo numero armonico (de der. a izq.).\nLo haremos con n = "<<r<<flush<<endl;
-	HarmonicNumber_differnce_sums(r);
+	cout<<"\n\nDiferencia entre la suma deln-esimo numero armonico (de izq. a der.) y el n-esimo numero armonico (de der. a izq.).\nLo haremos con n = "<<r<<flush<<endl;
+	cout<<"----------> O(N) <----------\n";
+	HarmonicNumber_differnce_sums(r);//*/
+	cout<<"\n\n¿ Cuantos numeros primos hay de [ 1 , 2x10^5 ] ? --------> O(N^2)"<<flush<<endl;
+	cout<<"Numeros Primos: "<<flush;
+	PrimeNumbers(prime_method);
 
   return 0;
 }
 
-void multiplicarescalar(int escalar,vector<int>& myvector){//multiplica un escalar por un vector(sin threads)
-	for(size_t i=0;i<myvector.size();i++)
-		myvector[i]=myvector[i]*escalar;
-	cout<<"vector multiplicado por el escalar: "<<escalar<<endl;
-}
 void sumarvector(vector<int>& vector1,vector<int>& myvector){ //suma de dos vectores con dos threads
 	clock_t t=clock();
-	if(vector1.size()!=myvector.size())throw runtime_error("no puedes sumar vectores de distinto orden");
-	int i=myvector.size()/2;
-	thread f1(sumarvector2,ref(vector1),ref(myvector),0,i);
-	thread f2(sumarvector2,ref(vector1),ref(myvector),i,myvector.size()/1);
-	f1.join();
-	f2.join();
+	int tamano_thread = Vec_Size/NUM_THREADS;
+	int begin,end;
+	
+	//iniciamos threads
+	vector<thread>th;
+	for (unsigned n = 0; n < NUM_THREADS; n++){
+		begin = n*tamano_thread;
+		end = (n+1)*tamano_thread;
+        th.push_back(std::thread(sumarvector2, std::ref(vector1),std::ref(myvector),begin,end));
+	}
+	for (unsigned n = 0; n < NUM_THREADS; n++)
+        th[n].join();
 	cout<<"  Tiempo de ejecucion: "<<(double)(clock()-t)/CLOCKS_PER_SEC<<flush<<endl;
 }
 
@@ -67,20 +86,28 @@ void sumarvector2(vector<int>& vector1,vector<int>& myvector,int n,int y){ //sum
 		vector1[i]=myvector[i]+vector1[i];
 }
 
-int productopunto(vector<int>& vector1,vector<int>& myvector,int n,int y){ //producto punto desde index n hasta index y de un vector
-	int answer=0;
+void productopunto2(vector<int>& vector1,vector<int>& myvector,int n,int y){ //producto punto desde index n hasta index y de un vector
 	for(int i=n;i<y;i++){
-		answer+= vector1[i]*myvector[i];
+		Producto_Punto+= vector1[i]*myvector[i]*std::exp(-std::pow(std::tanh(myvector[i]), std::acos(-1.0L) / 12.3456L));
 	}
-	return answer;
 }
-void productopuntoconthread(vector<int>& vector1,vector<int>& myvector){ //producto punto usando 2 threads
+void productopunto(vector<int>& vector1,vector<int>& myvector){ //producto punto usando n threads
 	clock_t t=clock();
-	int i=myvector.size()/2;
-	future<int> f1=async(launch::async,productopunto,ref(vector1),ref(myvector),0,i);
-	future<int> f2=async(launch::async,productopunto,ref(vector1),ref(myvector),i,myvector.size()/1);
-	int answer=f1.get()+f2.get();
-	cout<<answer<<endl;
+	int tamano_thread = Vec_Size/NUM_THREADS;
+	int begin,end;
+	
+	//iniciamos future
+	vector<thread> th;
+	for (unsigned n = 0; n < NUM_THREADS; n++){
+		begin = n*tamano_thread;
+		end = (n+1)*tamano_thread;
+        th.push_back(thread(productopunto2, std::ref(vector1),std::ref(myvector),begin,end));
+	}
+	
+	for (unsigned n = 0;n<NUM_THREADS; n++)   
+		th[n].join();
+		
+	cout<<"Producto: "<<Producto_Punto<<endl;
 	cout<<"  Tiempo de ejecucion: "<<(double)(clock()-t)/CLOCKS_PER_SEC<<flush<<endl;
 }
 void printvector(vector<int> & myvector){
@@ -96,27 +123,75 @@ void printvector(vector<int> & myvector){
 }
 
 
-void HarmonicNumber_differnce_sums(double n){ //producto punto usando 2 threads
+void HarmonicNumber_differnce_sums(double n){
 	clock_t t=clock();
-	future<double> f1=async(launch::async,HarmonicNumber_right,n);
-	future<double> f2=async(launch::async,HarmonicNumber_left,n);
-	double answer=f1.get()-f2.get();
+	int tamano_thread = (int)n/NUM_THREADS;
+	int begin,end;
+	double answer=0;
+	
+	//iniciamos future
+	vector<future<double>> th;
+	for (unsigned n = 0; n < NUM_THREADS; n++){
+		begin = (int)n*tamano_thread;
+		end = ((int)n+1)*tamano_thread;
+        th.push_back(async(HarmonicNumberaux,begin,end));
+	}
+	for (unsigned n = 0;n<NUM_THREADS; n++)   
+		answer +=th[n].get();
+
 	cout<<"Diferencia entre resultados: "<<answer<<flush<<endl;
 	cout<<"  Tiempo de ejecucion: "<<(double)(clock()-t)/CLOCKS_PER_SEC<<flush<<endl;
 }
 
-double HarmonicNumber_right(double n){
+double HarmonicNumberaux(double begin,double end){
+    return HarmonicNumber_right(begin,end)-HarmonicNumber_left(begin,end);
+}
+
+double HarmonicNumber_right(double beg,double end){
     double result = 0;
-    for(int i =1; i<=n; i++){
+    for(int i =beg; i<=end; i++){
         result += (double)1/i;
     }
     return result;
 }
 
-double HarmonicNumber_left(double n){
+double HarmonicNumber_left(double beg,double end){
     double result = 0;
-    for(int i=(int)n; i>=1; i--){
+    for(int i=(int)end; i>=(int)beg; i--){
         result += (double)1/i;
     }
     return result;
+}
+void PrimeNumbers(int n){
+	clock_t t=clock();
+	int tamano_thread = n/NUM_THREADS;
+	int begin,end;
+	
+	//iniciamos thread
+	vector<thread> th;
+	for (unsigned n = 0; n < NUM_THREADS; n++){
+		begin = n*tamano_thread;
+		end = (n+1)*tamano_thread;
+        th.push_back(thread(PrimeNumbersaux,begin,end));
+	}
+	
+	for (unsigned n = 0;n<NUM_THREADS; n++)   
+		th[n].join();
+		
+	cout<<numeros_primos<<endl;
+	cout<<"  Tiempo de ejecucion: "<<(double)(clock()-t)/CLOCKS_PER_SEC<<flush<<endl;
+}
+void PrimeNumbersaux(int begin,int end){
+	if(begin == 0)begin++;
+	for(int i=begin; i<end;i++)
+		if(isPrime(i)){
+			numeros_primos++;
+		}
+}
+bool isPrime(int i){
+	bool flag=true;
+	for(int j=2;j<i;j++){
+		if((i%j)==0) flag= false;
+	}
+	return flag;
 }
