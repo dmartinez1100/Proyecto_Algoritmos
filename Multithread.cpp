@@ -9,7 +9,7 @@
 using namespace std;
 
 const int NUM_THREADS=8;
-const int Vec_Size=1*pow(10, 7); //recomendado 10^8 (12 segs) 8 threads
+const int Vec_Size=1*pow(10, 8); //recomendado 10^8 (12 segs) 8 threads
 int Producto_Punto=0;
 int numeros_primos=0;
 int prime_method = 2*pow(10, 5);
@@ -88,7 +88,7 @@ void sumarvector2(vector<int>& vector1,vector<int>& myvector,int n,int y){ //sum
 
 void productopunto2(vector<int>& vector1,vector<int>& myvector,int n,int y){ //producto punto desde index n hasta index y de un vector
 	for(int i=n;i<y;i++){
-		Producto_Punto+= vector1[i]*myvector[i]*std::exp(-std::pow(std::tanh(myvector[i]), std::acos(-1.0L) / 12.3456L));
+		Producto_Punto+= vector1[i]*myvector[i];  //*std::exp(-std::pow(std::tanh(myvector[i]), std::acos(-1.0L) / 12.3456L));
 	}
 }
 void productopunto(vector<int>& vector1,vector<int>& myvector){ //producto punto usando n threads
