@@ -14,22 +14,16 @@ BinaryHeap<DataType>::BinaryHeap(int capacity) {
 template <typename DataType>
 void BinaryHeap<DataType>::insert(const DataType & elem) {
   count++;
-  DataType temporal = elem;
-  for(size_t i = 1;i < count; i++){
-    size_t izq = 2*i;
-    size_t der = (2*i)+1;
-
-    if(temporal < array[i]){
-      swap(temporal,array[i]);
+  array[count] = elem;
+  size_t aux = count;
+  for(size_t i = floor(count/2); i >= 1; i/=2){
+    if(array[aux] <= array[i]){
+      swap(array[aux],array[i]);
+      aux = i;
     }
-    else if (izq <= count && temporal < array[izq]){
-      swap(temporal,array[izq]);
-    }
-    else if( der <= count && temporal < array[der]){
-      swap(temporal,array[der]);
-    }
+    else
+      break;
   }
-  array[count] = temporal;
 }
 
 /**
@@ -59,12 +53,12 @@ const DataType & BinaryHeap<DataType>::findMin() const {
  */
 template <typename DataType>
 void BinaryHeap<DataType>::deleteMin() {
-  if(isEmpty())
-    throw std::underflow_error("Tried to delete min in empty heap");
-  else{
+  if(count > 0){
   percolateDown(1);
   count--;
   }
+  else
+  throw std::underflow_error("Tried to delete min in empty heap");
 }
 
 /**
@@ -99,10 +93,9 @@ void BinaryHeap<DataType>::percolateDown(int hole) {
 template <typename DataType>
 void BinaryHeap<DataType>::display() const {
     for(unsigned int i = 1; i <= count; ++i ){
-        std::cout << array[i];//<<" ";
+        std::cout << array[i];
         std::cout << std::endl;
     }
 }
-
 
 #endif /* heap_hpp */
