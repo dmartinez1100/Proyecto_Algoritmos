@@ -3,10 +3,10 @@
 #include <vector>
 #include <cmath>
 #include <complex>
-
+#include<chrono>
 using vector_type = std::complex<long double>;
 
-const unsigned NUM_THREADS = 5;
+const unsigned NUM_THREADS = 2;
 const unsigned VEC_SIZE = static_cast<unsigned>(2 * std::pow(10, 7));
 
 void work(const std::vector<vector_type> & v, unsigned chunk,
@@ -20,7 +20,7 @@ void work(const std::vector<vector_type> & v, unsigned chunk,
                                     std::tanh(v[i]), std::acos(-1.0L) / 12.3456L
                                     )
                            );
-     std::cout << "Thread " << result << std::endl;
+     //std::cout << "Thread " << result << std::endl;
 }  
 
 int main() {
@@ -34,6 +34,7 @@ int main() {
     std::vector<std::thread> th;
     std::vector<vector_type> res(NUM_THREADS);
     
+    clock_t t=clock();
     for (unsigned n = 0; n < NUM_THREADS; n++)
         th.push_back(std::thread(work, std::ref(iv), n, std::ref(res[n])));
     
@@ -43,6 +44,6 @@ int main() {
     vector_type sol = 0;
     for (unsigned n = 0; n < NUM_THREADS; n++) sol += res[n];
     std::cout << "Solution: " << sol << std::endl;
-    
+    std::cout<<"  Tiempo de ejecucion: "<<(double)(clock()-t)/CLOCKS_PER_SEC<<"\n";
     return 0;
 }

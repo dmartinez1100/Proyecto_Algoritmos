@@ -8,11 +8,11 @@
 #include<cmath>
 using namespace std;
 
-const int NUM_THREADS=8;
-const int Vec_Size=1*pow(10, 8); //recomendado 10^8 (12 segs) 8 threads
+const int NUM_THREADS=1;
+const unsigned Vec_Size=static_cast<unsigned>(1*pow(10, 8)); //recomendado 10^8 (12 segs) 8 threads
 int Producto_Punto=0;
 int numeros_primos=0;
-int prime_method = 2*pow(10, 5);
+int prime_method = 9*pow(10, 4); //2*10^5
 
 void sumarvector2(vector<int>& vector1,vector<int>& myvector,int n,int y);
 void sumarvector(vector<int>& vector1,vector<int>& myvector);
@@ -88,11 +88,12 @@ void sumarvector2(vector<int>& vector1,vector<int>& myvector,int n,int y){ //sum
 
 void productopunto2(vector<int>& vector1,vector<int>& myvector,int n,int y){ //producto punto desde index n hasta index y de un vector
 	for(int i=n;i<y;i++){
-		Producto_Punto+= vector1[i]*myvector[i];  //*std::exp(-std::pow(std::tanh(myvector[i]), std::acos(-1.0L) / 12.3456L));
+		Producto_Punto+= vector1[i]*myvector[i]*std::exp(-std::pow(std::tanh(1235563466), std::acos(-1.0L) / 12.3456L));
 	}
 }
 void productopunto(vector<int>& vector1,vector<int>& myvector){ //producto punto usando n threads
 	clock_t t=clock();
+	
 	int tamano_thread = Vec_Size/NUM_THREADS;
 	int begin,end;
 	
@@ -107,7 +108,7 @@ void productopunto(vector<int>& vector1,vector<int>& myvector){ //producto punto
 	for (unsigned n = 0;n<NUM_THREADS; n++)   
 		th[n].join();
 		
-	cout<<"Producto: "<<Producto_Punto<<endl;
+	//cout<<"Producto: "<<Producto_Punto<<endl;
 	cout<<"  Tiempo de ejecucion: "<<(double)(clock()-t)/CLOCKS_PER_SEC<<flush<<endl;
 }
 void printvector(vector<int> & myvector){
@@ -125,6 +126,7 @@ void printvector(vector<int> & myvector){
 
 void HarmonicNumber_differnce_sums(double n){
 	clock_t t=clock();
+	
 	int tamano_thread = (int)n/NUM_THREADS;
 	int begin,end;
 	double answer=0;
@@ -162,9 +164,9 @@ double HarmonicNumber_left(double beg,double end){
     }
     return result;
 }
-void PrimeNumbers(int n){
+void PrimeNumbers(int number){
 	clock_t t=clock();
-	int tamano_thread = n/NUM_THREADS;
+	int tamano_thread = floor(number/NUM_THREADS);
 	int begin,end;
 	
 	//iniciamos thread
@@ -172,6 +174,7 @@ void PrimeNumbers(int n){
 	for (unsigned n = 0; n < NUM_THREADS; n++){
 		begin = n*tamano_thread;
 		end = (n+1)*tamano_thread;
+		if(n == NUM_THREADS-1)end = number;
         th.push_back(thread(PrimeNumbersaux,begin,end));
 	}
 	
