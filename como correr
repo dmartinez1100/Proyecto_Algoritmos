@@ -1,0 +1,3 @@
+ - g++ -std=c++14 -Werror -Wall Multithread.cpp -pthread
+ - g++ -std=c++14 Fibo_Multithread.cpp -Wall -Werror -pthread
+ - time ./a.out
