@@ -12,6 +12,8 @@ void tiempofiboconthread(int n);
 
 const int numerofibo = 21; // 21 ----> 5 segs(thread)  	43----> 6 segs(no thread)
 bool compararthreads = true;
+
+//variables globales para guardar el resultado;
 int fibosin=0;
 int fibocon=0;
 
@@ -25,20 +27,22 @@ int main(){
 
     return 0;
 }
-
+//calcula el tiempo del algoritmo usando threads
 void tiempofiboconthread(int n){
 	clock_t t=clock();
 	fiboconthread(n);
 	cout<<fibocon<<"  Tiempo de ejecucion: "<<(double)(clock()-t)/CLOCKS_PER_SEC<<flush<<endl;
 }
-
+//metodo que toma el tiempo del algoritmo sin thread
 void tiempofibosinthread(int n){
 	clock_t t=clock();
 	fibosinthread(n);
 	cout<<fibosin<<"  Tiempo de ejecucion: "<<(double)(clock()-t)/CLOCKS_PER_SEC<<flush<<endl;
 }
 
-
+//sucesion de Fibonacci usando threads, crea 2 threads por recursion (extremadamente ineficiente)
+	//input: entero n
+	//output: void
 void fiboconthread(int n){
 	thread fn1;
 	thread fn2;
@@ -51,6 +55,9 @@ void fiboconthread(int n){
 		fn2.join();
 	}
 }
+//sucesion de Fibonacci
+	//input: entero n
+	//output: void
 void fibosinthread(int end){
 	if(end<=1)
 		fibosin += end;
